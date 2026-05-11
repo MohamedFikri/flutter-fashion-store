@@ -15,9 +15,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initialize sample products if needed
-  await FirebaseService.initializeProducts();
-
   // Lock orientation to portrait
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -43,13 +40,26 @@ class ModaFusionApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AuthProvider>(
-      create: (_) => AuthProvider(),
-      child: Consumer<AuthProvider>(
-        builder: (context, auth, child) {
-          return auth.isLoggedIn ? const MainNavScreen() : const LoginScreen();
-        },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Moda Fusion',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          useMaterial3: true,
+          fontFamily: 'Poppins',
+        ),
+        home: Consumer<AuthProvider>(
+          builder: (context, auth, _) {
+            return auth.isLoggedIn ? const MainNavScreen() : const LoginScreen();
+          },
+        ),
       ),
     );
   }
 }
+

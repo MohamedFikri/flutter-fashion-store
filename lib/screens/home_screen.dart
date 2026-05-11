@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../providers/providers.dart';
-import '../services/product_service.dart';
+import '../services/firebase_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/widgets.dart';
 import '../models/models.dart';
@@ -18,38 +18,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ProductService _productService = ProductService();
   final _searchCtrl = TextEditingController();
   String _selectedCategory = 'All';
-  
+
   final List<String> _categories = [
-    'All', 'Hoodies', 'Graphic', 'Oversized', 'Zip-Up', 'Pullover', 'Limited'
+    'All',
+    'Hoodies',
+    'Graphic',
+    'Oversized',
+    'Zip-Up',
+    'Pullover',
+    'Limited'
   ];
-  
+
   final List<Map<String, dynamic>> _banners = [
     {
       'title': 'New Arriva OutFit',
       'subtitle': 'Discover Quality Fashion Collection',
       'color': const Color(0xFF1A1A2E),
-      'image': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+      'image': 'assets/images/products/womens_kurti_set_1.jpg',
+      'isLocal': true,
     },
     {
       'title': 'ENJOY\nHOODIE',
       'subtitle': 'Words Have Power',
       'color': const Color(0xFFE94560),
-      'image': 'https://images.unsplash.com/photo-1556821840-3a63f9560947?w=800',
+      'image': 'assets/images/products/boys_hoodie_1.jpg',
+      'isLocal': true,
     },
     {
       'title': 'GRAPHIC\nCOLLECTION',
       'subtitle': 'Statement Designs',
       'color': const Color(0xFF2D2D2D),
-      'image': 'https://images.unsplash.com/photo-1515372039734-b8f2a3214755?w=800',
+      'image': 'assets/images/products/mens_casual_shirt_1.jpg',
+      'isLocal': true,
     },
     {
       'title': 'LIMITED\nEDITION',
       'subtitle': 'Exclusive Drops',
       'color': const Color(0xFFF5A623),
-      'image': 'https://images.unsplash.com/photo-1556821840-3a63f9560947?w=800',
+      'image': 'assets/images/products/sports_shoes_1.jpg',
+      'isLocal': true,
     },
   ];
 
@@ -65,8 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFF1A1A2E).withOpacity(0.05),
-              const Color(0xFF2D3436).withOpacity(0.05),
+              const Color(0xFF1A1A2E).withValues(alpha: 0.05),
+              const Color(0xFF2D3436).withValues(alpha: 0.05),
             ],
           ),
         ),
@@ -77,11 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 margin: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.95),
+                  color: Colors.white.withValues(alpha: 0.95),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -113,9 +122,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    
+
                     const SizedBox(width: 16),
-                    
+
                     // Search Field
                     Expanded(
                       child: TextField(
@@ -125,26 +134,30 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const ProductListingScreen(category: '', searchQuery: ''),
+                                builder: (_) => const ProductListingScreen(
+                                    category: '', searchQuery: ''),
                               ),
                             );
                           }
                         },
                         decoration: InputDecoration(
                           hintText: 'Search for hoodies...',
-                          prefixIcon: const Icon(Icons.search, color: Color(0xFFE94560)),
-                          suffixIcon: const Icon(Icons.tune, color: Color(0xFFE94560)),
+                          prefixIcon: const Icon(Icons.search,
+                              color: Color(0xFFE94560)),
+                          suffixIcon:
+                              const Icon(Icons.tune, color: Color(0xFFE94560)),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                       ),
                     ),
-                    
+
                     // Cart Button
                     GestureDetector(
                       onTap: () => Navigator.push(
@@ -209,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 25,
                         offset: const Offset(0, 12),
                       ),
@@ -248,7 +261,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const ProductListingScreen(category: '', searchQuery: ''),
+                                builder: (_) => const ProductListingScreen(
+                                    category: '', searchQuery: ''),
                               ),
                             );
                           }
@@ -272,7 +286,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   onAction: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const ProductListingScreen(category: '', searchQuery: ''),
+                      builder: (_) => const ProductListingScreen(
+                          category: '', searchQuery: ''),
                     ),
                   ),
                 ),
@@ -289,30 +304,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    return StreamBuilder<List<ProductModel>>(
-                      stream: _productService.getFeaturedProducts(),
+                    return FutureBuilder<List<ProductModel>>(
+                      future: FirebaseService.getFeaturedProducts(),
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(child: CircularProgressIndicator());
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(
+                              child: Text('No products found'));
                         }
                         final products = snapshot.data!;
                         if (index < products.length) {
                           return _buildProductCard(products[index]);
                         }
-                        return _buildProductCard(ProductModel(
-      id: '',
-      name: 'Product Name',
-      description: 'Product description',
-      price: 0.0,
-      category: '',
-      images: [''],
-      sizes: [],
-      colors: [],
-      rating: 0.0,
-      reviewCount: 0,
-      isFeatured: false,
-      stock: 0,
-    ));
+                        return const SizedBox.shrink();
                       },
                     );
                   },
@@ -330,7 +337,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [const Color(0xFF1A1A2E), const Color(0xFFE94560).withOpacity(0.8)],
+                    colors: [
+                      const Color(0xFF1A1A2E),
+                      const Color(0xFFE94560).withValues(alpha: 0.8)
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -344,8 +354,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 120,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.1),
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                        color: Colors.white.withValues(alpha: 0.1),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.3),
+                            width: 2),
                       ),
                       child: const Center(
                         child: Icon(
@@ -382,14 +394,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const ProductListingScreen(category: 'Hoodies', searchQuery: ''),
+                            builder: (_) => const ProductListingScreen(
+                                category: 'Hoodies', searchQuery: ''),
                           ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: const Color(0xFF1A1A2E),
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -420,7 +434,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   onAction: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const ProductListingScreen(category: '', searchQuery: ''),
+                      builder: (_) => const ProductListingScreen(
+                          category: '', searchQuery: ''),
                     ),
                   ),
                 ),
@@ -437,30 +452,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    return StreamBuilder<List<ProductModel>>(
-                      stream: _productService.getProducts(),
+                    return FutureBuilder<List<ProductModel>>(
+                      future: FirebaseService.getAllProducts(),
                       builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
                         if (!snapshot.hasData) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: Text('No products found'));
                         }
                         final products = snapshot.data!;
                         if (index < products.length) {
                           return _buildProductCard(products[index]);
                         }
-                        return _buildProductCard(ProductModel(
-      id: '',
-      name: 'Product Name',
-      description: 'Product description',
-      price: 0.0,
-      category: '',
-      images: [''],
-      sizes: [],
-      colors: [],
-      rating: 0.0,
-      reviewCount: 0,
-      isFeatured: false,
-      stock: 0,
-    ));
+                        return const SizedBox.shrink();
                       },
                     );
                   },
@@ -482,13 +489,13 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: LinearGradient(
-          colors: [data['color'], data['color'].withOpacity(0.7)],
+          colors: [data['color'], data['color'].withValues(alpha: 0.7)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 25,
             offset: const Offset(0, 12),
           ),
@@ -503,12 +510,14 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(
-                image: CachedNetworkImageProvider(data['image']),
+                image: data['isLocal'] == true
+                    ? AssetImage(data['image']) as ImageProvider
+                    : CachedNetworkImageProvider(data['image']) as ImageProvider,
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          
+
           // Gradient Overlay
           Container(
             width: double.infinity,
@@ -518,7 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  (data['color'] as Color).withOpacity(0.3),
+                  (data['color'] as Color).withValues(alpha: 0.3),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -545,7 +554,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     data['subtitle'],
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -554,13 +563,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -600,7 +610,7 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.12),
+              color: Colors.black.withValues(alpha: 0.12),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -615,10 +625,13 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(16)),
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      product.images.isNotEmpty ? product.images.first : 'https://via.placeholder.com/400x400',
+                    image: AssetImage(
+                      product.images.isNotEmpty
+                          ? product.images.first
+                          : 'assets/images/products/womens_kurti_set_1.jpg',
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -628,13 +641,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Gradient overlay for better text visibility
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16)),
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.1),
+                            Colors.black.withValues(alpha: 0.1),
                           ],
                         ),
                       ),
@@ -645,7 +659,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         top: 8,
                         left: 8,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: const Color(0xFFE94560),
                             borderRadius: BorderRadius.circular(12),
@@ -661,12 +676,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     // Discount badge
-                    if (product.originalPrice != null && product.originalPrice! > product.price)
+                    if (product.originalPrice != null &&
+                        product.originalPrice! > product.price)
                       Positioned(
                         top: 8,
                         right: 8,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -707,7 +724,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    
+
                     // Rating
                     Row(
                       children: [
@@ -735,9 +752,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 6),
-                    
+
                     // Price Section
                     Row(
                       children: [
@@ -753,7 +770,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        if (product.originalPrice != null && product.originalPrice! > product.price) ...[
+                        if (product.originalPrice != null &&
+                            product.originalPrice! > product.price) ...[
                           const SizedBox(width: 6),
                           Flexible(
                             child: Text(
@@ -770,14 +788,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ],
                     ),
-                    
+
                     const SizedBox(height: 6),
-                    
+
                     // Stock indicator
                     Row(
                       children: [
                         Icon(
-                          product.stock > 0 ? Icons.check_circle : Icons.remove_circle,
+                          product.stock > 0
+                              ? Icons.check_circle
+                              : Icons.remove_circle,
                           color: product.stock > 0 ? Colors.green : Colors.red,
                           size: 12,
                         ),
@@ -786,7 +806,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           product.stock > 0 ? 'In Stock' : 'Out of Stock',
                           style: TextStyle(
                             fontSize: 10,
-                            color: product.stock > 0 ? Colors.green : Colors.red,
+                            color:
+                                product.stock > 0 ? Colors.green : Colors.red,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

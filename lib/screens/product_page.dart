@@ -20,7 +20,6 @@ class _ProductPageState extends State<ProductPage> {
   String? _selectedSize;
   String? _selectedColor;
   int _quantity = 1;
-  final bool _isExpanded = false;
   int _currentIndex = 0;
 
   @override
@@ -107,7 +106,9 @@ class _ProductPageState extends State<ProductPage> {
                           ),
                           errorWidget: (context, url, error) => Container(
                             color: Colors.grey.shade200,
-                            child: const Center(child: Icon(Icons.image_not_supported_outlined)),
+                            child: const Center(
+                                child:
+                                    Icon(Icons.image_not_supported_outlined)),
                           ),
                         )
                       : Image.asset(
@@ -126,7 +127,7 @@ class _ProductPageState extends State<ProductPage> {
                   gradient: LinearGradient(
                     colors: [
                       Colors.transparent,
-                      Colors.black.withOpacity(0.3),
+                      Colors.black.withValues(alpha: 0.3),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -151,9 +152,7 @@ class _ProductPageState extends State<ProductPage> {
           width: _currentIndex == index ? 12 : 8,
           height: _currentIndex == index ? 12 : 8,
           decoration: BoxDecoration(
-            color: _currentIndex == index
-                ? AppColors.primary
-                : Colors.grey,
+            color: _currentIndex == index ? AppColors.primary : Colors.grey,
             borderRadius: BorderRadius.circular(6),
           ),
         ),
@@ -179,9 +178,7 @@ class _ProductPageState extends State<ProductPage> {
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary)),
-
           const SizedBox(height: 10),
-
           RatingBarIndicator(
             rating: widget.product.rating,
             itemBuilder: (context, _) =>
@@ -201,7 +198,6 @@ class _ProductPageState extends State<ProductPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           // SIZE
           if (widget.product.sizes.isNotEmpty) ...[
             const Text("Size", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -214,16 +210,12 @@ class _ProductPageState extends State<ProductPage> {
                     margin: const EdgeInsets.all(5),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: selected
-                          ? AppColors.primary
-                          : Colors.white,
+                      color: selected ? AppColors.primary : Colors.white,
                       border: Border.all(color: AppColors.primary),
                     ),
                     child: Text(size,
                         style: TextStyle(
-                            color: selected
-                                ? Colors.white
-                                : Colors.black)),
+                            color: selected ? Colors.white : Colors.black)),
                   ),
                 );
               }).toList(),
@@ -244,16 +236,12 @@ class _ProductPageState extends State<ProductPage> {
                     margin: const EdgeInsets.all(5),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: selected
-                          ? AppColors.primary
-                          : Colors.white,
+                      color: selected ? AppColors.primary : Colors.white,
                       border: Border.all(color: AppColors.primary),
                     ),
                     child: Text(color,
                         style: TextStyle(
-                            color: selected
-                                ? Colors.white
-                                : Colors.black)),
+                            color: selected ? Colors.white : Colors.black)),
                   ),
                 );
               }).toList(),
@@ -285,9 +273,7 @@ class _ProductPageState extends State<ProductPage> {
                   icon: const Icon(Icons.add)),
             ],
           ),
-
           const SizedBox(height: 10),
-
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

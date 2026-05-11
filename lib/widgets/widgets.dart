@@ -21,7 +21,7 @@ class ProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppConstants.cardRadius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -45,7 +45,8 @@ class ProductCard extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 placeholder: (_, __) => _shimmer(),
                                 errorWidget: (_, __, ___) => _placeholder(),
-                                fadeInDuration: const Duration(milliseconds: 250),
+                                fadeInDuration:
+                                    const Duration(milliseconds: 250),
                                 memCacheWidth: 1200,
                                 maxWidthDiskCache: 1200,
                               )
@@ -192,7 +193,7 @@ class CategoryChip extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: AppColors.primary.withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   )
@@ -203,8 +204,7 @@ class CategoryChip extends StatelessWidget {
           label,
           style: TextStyle(
             color: isSelected ? AppColors.white : AppColors.darkGrey,
-            fontWeight:
-                isSelected ? FontWeight.w600 : FontWeight.normal,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             fontSize: 13,
           ),
         ),
@@ -263,8 +263,7 @@ class AppButton extends StatelessWidget {
       ? const SizedBox(
           width: 22,
           height: 22,
-          child: CircularProgressIndicator(
-              strokeWidth: 2, color: Colors.white),
+          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
         )
       : Text(
           text,
@@ -314,14 +313,15 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(
-          color: AppColors.grey.withOpacity(0.7),
+          color: AppColors.grey.withValues(alpha: 0.7),
           fontSize: 16,
         ),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: AppColors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.lightGrey),

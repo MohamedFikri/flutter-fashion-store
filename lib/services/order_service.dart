@@ -11,7 +11,8 @@ class OrderService {
         OrderItemModel(
           productId: '1',
           productName: 'Summer Dress',
-          productImage: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400',
+          productImage:
+              'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400',
           price: 49.99,
           quantity: 2,
           selectedSize: 'M',
@@ -39,7 +40,8 @@ class OrderService {
         OrderItemModel(
           productId: '2',
           productName: 'Men\'s Classic T-Shirt',
-          productImage: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
+          productImage:
+              'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
           price: 29.99,
           quantity: 1,
           selectedSize: 'L',
@@ -65,7 +67,9 @@ class OrderService {
   // ── Get User Orders ────────────────────────────────────────
   Stream<List<OrderModel>> getUserOrders(String userId) {
     // Simulate network delay and return mock data
-    return Stream.value(_mockOrders.where((order) => order.userId == userId).toList()).asyncMap(
+    return Stream.value(
+            _mockOrders.where((order) => order.userId == userId).toList())
+        .asyncMap(
       (orders) async {
         await Future.delayed(const Duration(milliseconds: 500));
         return orders;
@@ -82,12 +86,10 @@ class OrderService {
   }) async {
     // Simulate order creation
     await Future.delayed(const Duration(seconds: 1));
-    
+
     final orderId = 'order_${DateTime.now().millisecondsSinceEpoch}';
-    
+
     // In a real app, this would save to Firestore
-    print('Mock order created: $orderId');
-    
     return orderId;
   }
 
@@ -104,10 +106,8 @@ class OrderService {
   // ── Update Order Status ───────────────────────────────────
   Future<bool> updateOrderStatus(String orderId, String status) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     // In a real app, this would update in Firestore
-    print('Mock order status updated: $orderId -> $status');
-    
     return true;
   }
 }

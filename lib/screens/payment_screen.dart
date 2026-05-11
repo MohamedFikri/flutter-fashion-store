@@ -13,16 +13,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final _expiryController = TextEditingController();
   final _cvvController = TextEditingController();
   final _amountController = TextEditingController();
-  
+
   String _selectedCardType = 'visa';
   bool _isProcessing = false;
   bool _saveCard = false;
 
   final List<Map<String, dynamic>> _cardTypes = [
-    {'type': 'visa', 'icon': 'assets/visa.png', 'color': const Color(0xFF1A1F71)},
-    {'type': 'mastercard', 'icon': 'assets/mastercard.png', 'color': const Color(0xFFEB001B)},
-    {'type': 'amex', 'icon': 'assets/amex.png', 'color': const Color(0xFF006FCF)},
-    {'type': 'discover', 'icon': 'assets/discover.png', 'color': const Color(0xFFFF6000)},
+    {
+      'type': 'visa',
+      'icon': 'assets/visa.png',
+      'color': const Color(0xFF1A1F71)
+    },
+    {
+      'type': 'mastercard',
+      'icon': 'assets/mastercard.png',
+      'color': const Color(0xFFEB001B)
+    },
+    {
+      'type': 'amex',
+      'icon': 'assets/amex.png',
+      'color': const Color(0xFF006FCF)
+    },
+    {
+      'type': 'discover',
+      'icon': 'assets/discover.png',
+      'color': const Color(0xFFFF6000)
+    },
   ];
 
   @override
@@ -30,7 +46,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       appBar: AppBar(
-        title: const Text('Payment', style: TextStyle(color: Color(0xFF1A1A2E))),
+        title:
+            const Text('Payment', style: TextStyle(color: Color(0xFF1A1A2E))),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xFF1A1A2E)),
@@ -89,7 +106,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -115,7 +132,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
             borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
     );
@@ -129,7 +147,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -158,7 +176,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     decoration: BoxDecoration(
                       color: _selectedCardType == card['type']
                           ? card['color']
-                          : Colors.grey.withOpacity(0.1),
+                          : Colors.grey.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: _selectedCardType == card['type']
@@ -218,7 +236,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -233,16 +251,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
             decoration: InputDecoration(
               labelText: 'Card Number',
               labelStyle: const TextStyle(color: Color(0xFF1A1A2E)),
-              prefixIcon: const Icon(Icons.credit_card, color: Color(0xFFE94560)),
+              prefixIcon:
+                  const Icon(Icons.credit_card, color: Color(0xFFE94560)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
+                borderSide:
+                    const BorderSide(color: Color(0xFFE94560), width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
           ),
           const SizedBox(height: 16),
@@ -260,9 +281,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
+                borderSide:
+                    const BorderSide(color: Color(0xFFE94560), width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
           ),
           const SizedBox(height: 16),
@@ -282,9 +305,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
+                      borderSide:
+                          const BorderSide(color: Color(0xFFE94560), width: 2),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                   ),
                 ),
               ),
@@ -302,9 +327,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
+                      borderSide:
+                          const BorderSide(color: Color(0xFFE94560), width: 2),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                   ),
                 ),
               ),
@@ -323,7 +350,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),

@@ -11,9 +11,9 @@ import 'order_success_screen.dart';
 class CheckoutScreen extends StatefulWidget {
   final PaymentMethodModel? preselectedPaymentMethod;
   final PaymentDetails? preselectedPaymentDetails;
-  
+
   const CheckoutScreen({
-    super.key, 
+    super.key,
     this.preselectedPaymentMethod,
     this.preselectedPaymentDetails,
   });
@@ -39,7 +39,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedPaymentMethod = widget.preselectedPaymentMethod ?? PaymentService.getMethodById('cod');
+    _selectedPaymentMethod =
+        widget.preselectedPaymentMethod ?? PaymentService.getMethodById('cod');
     _paymentDetails = widget.preselectedPaymentDetails;
   }
 
@@ -61,8 +62,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
 
     // Check if payment method requires additional details
-    if (_selectedPaymentMethod != null && 
-        _requiresPaymentDetails(_selectedPaymentMethod!) && 
+    if (_selectedPaymentMethod != null &&
+        _requiresPaymentDetails(_selectedPaymentMethod!) &&
         _paymentDetails == null) {
       setState(() => _showPaymentDetailsForm = true);
       return;
@@ -73,10 +74,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     try {
       // Process payment if needed
-      if (_paymentDetails != null && _selectedPaymentMethod!.type != PaymentType.cashOnDelivery) {
+      if (_paymentDetails != null &&
+          _selectedPaymentMethod!.type != PaymentType.cashOnDelivery) {
         final total = cart.total;
-        final paymentSuccess = await PaymentService.processPayment(_paymentDetails!, total);
-        
+        final paymentSuccess =
+            await PaymentService.processPayment(_paymentDetails!, total);
+
         if (!paymentSuccess) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -91,14 +94,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         }
       }
 
-      final success = await cart.checkout();
+      final success = await cart.checkout(
+        fullName: _nameCtrl.text,
+        phone: _phoneCtrl.text,
+        address: _addressCtrl.text,
+        city: _cityCtrl.text,
+        postalCode: _postalCtrl.text,
+        country: _countryCtrl.text,
+      );
 
       if (!mounted) return;
       setState(() => _isLoading = false);
 
       if (success) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const OrderSuccessScreen(orderId: 'mock_order_id')),
+          MaterialPageRoute(
+              builder: (_) =>
+                  const OrderSuccessScreen(orderId: 'mock_order_id')),
         );
       }
     } catch (e) {
@@ -183,7 +195,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               delivery: _nameCtrl.text,
                               address:
                                   '${_addressCtrl.text}, ${_cityCtrl.text}',
-                              payment: _selectedPaymentMethod?.title ?? 'Cash on Delivery',
+                              payment: _selectedPaymentMethod?.title ??
+                                  'Cash on Delivery',
                             ),
                 ),
               ),
@@ -221,7 +234,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ],
               ),
             ),
-            
+
             // Payment Details Modal
             if (_showPaymentDetailsForm && _selectedPaymentMethod != null)
               PaymentDetailsForm(
@@ -251,9 +264,8 @@ class _StepIndicator extends StatelessWidget {
             return Expanded(
               child: Container(
                 height: 2,
-                color: i ~/ 2 < current
-                    ? AppColors.primary
-                    : AppColors.lightGrey,
+                color:
+                    i ~/ 2 < current ? AppColors.primary : AppColors.lightGrey,
               ),
             );
           }
@@ -267,21 +279,17 @@ class _StepIndicator extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: done || active
-                      ? AppColors.primary
-                      : AppColors.lightGrey,
+                  color:
+                      done || active ? AppColors.primary : AppColors.lightGrey,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: done
-                      ? const Icon(Icons.check,
-                          color: Colors.white, size: 16)
+                      ? const Icon(Icons.check, color: Colors.white, size: 16)
                       : Text(
                           '${idx + 1}',
                           style: TextStyle(
-                            color: active
-                                ? Colors.white
-                                : AppColors.grey,
+                            color: active ? Colors.white : AppColors.grey,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -293,8 +301,7 @@ class _StepIndicator extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   color: active ? AppColors.primary : AppColors.grey,
-                  fontWeight:
-                      active ? FontWeight.w600 : FontWeight.normal,
+                  fontWeight: active ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
             ],
@@ -306,8 +313,12 @@ class _StepIndicator extends StatelessWidget {
 }
 
 class _DeliveryForm extends StatelessWidget {
-  final TextEditingController nameCtrl, phoneCtrl, addressCtrl,
-      cityCtrl, postalCtrl, countryCtrl;
+  final TextEditingController nameCtrl,
+      phoneCtrl,
+      addressCtrl,
+      cityCtrl,
+      postalCtrl,
+      countryCtrl;
 
   const _DeliveryForm({
     super.key,
@@ -329,28 +340,23 @@ class _DeliveryForm extends StatelessWidget {
         AppTextField(
             hint: 'Full Name',
             controller: nameCtrl,
-            prefixIcon:
-                const Icon(Icons.person_outline, color: AppColors.grey),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'Required' : null),
+            prefixIcon: const Icon(Icons.person_outline, color: AppColors.grey),
+            validator: (v) => v == null || v.isEmpty ? 'Required' : null),
         const SizedBox(height: 14),
         AppTextField(
             hint: 'Phone Number',
             controller: phoneCtrl,
             keyboardType: TextInputType.phone,
-            prefixIcon:
-                const Icon(Icons.phone_outlined, color: AppColors.grey),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'Required' : null),
+            prefixIcon: const Icon(Icons.phone_outlined, color: AppColors.grey),
+            validator: (v) => v == null || v.isEmpty ? 'Required' : null),
         const SizedBox(height: 14),
         AppTextField(
             hint: 'Street Address',
             controller: addressCtrl,
-            prefixIcon: const Icon(Icons.location_on_outlined,
-                color: AppColors.grey),
+            prefixIcon:
+                const Icon(Icons.location_on_outlined, color: AppColors.grey),
             maxLines: 2,
-            validator: (v) =>
-                v == null || v.isEmpty ? 'Required' : null),
+            validator: (v) => v == null || v.isEmpty ? 'Required' : null),
         const SizedBox(height: 14),
         Row(
           children: [
@@ -358,8 +364,7 @@ class _DeliveryForm extends StatelessWidget {
               child: AppTextField(
                   hint: 'City',
                   controller: cityCtrl,
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Required' : null),
+                  validator: (v) => v == null || v.isEmpty ? 'Required' : null),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -367,8 +372,7 @@ class _DeliveryForm extends StatelessWidget {
                   hint: 'Postal Code',
                   controller: postalCtrl,
                   keyboardType: TextInputType.number,
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Required' : null),
+                  validator: (v) => v == null || v.isEmpty ? 'Required' : null),
             ),
           ],
         ),
@@ -376,10 +380,8 @@ class _DeliveryForm extends StatelessWidget {
         AppTextField(
             hint: 'Country',
             controller: countryCtrl,
-            prefixIcon: const Icon(Icons.flag_outlined,
-                color: AppColors.grey),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'Required' : null),
+            prefixIcon: const Icon(Icons.flag_outlined, color: AppColors.grey),
+            validator: (v) => v == null || v.isEmpty ? 'Required' : null),
       ],
     );
   }
@@ -411,12 +413,10 @@ class _PaymentForm extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primary.withOpacity(0.05)
+                    ? AppColors.primary.withValues(alpha: 0.05)
                     : AppColors.white,
                 border: Border.all(
-                  color: isSelected
-                      ? AppColors.primary
-                      : AppColors.lightGrey,
+                  color: isSelected ? AppColors.primary : AppColors.lightGrey,
                   width: isSelected ? 2 : 1,
                 ),
                 borderRadius: BorderRadius.circular(14),
@@ -424,9 +424,7 @@ class _PaymentForm extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(method.icon,
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.grey),
+                      color: isSelected ? AppColors.primary : AppColors.grey),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -441,7 +439,8 @@ class _PaymentForm extends StatelessWidget {
                             )),
                         Text(method.description,
                             style: AppTextStyles.bodySmall),
-                        if (method.processingFee != null && method.processingFee! > 0)
+                        if (method.processingFee != null &&
+                            method.processingFee! > 0)
                           Text(
                             'Processing fee: ${method.processingFee}%',
                             style: AppTextStyles.bodySmall.copyWith(
@@ -452,8 +451,7 @@ class _PaymentForm extends StatelessWidget {
                     ),
                   ),
                   if (isSelected)
-                    const Icon(Icons.check_circle,
-                        color: AppColors.primary),
+                    const Icon(Icons.check_circle, color: AppColors.primary),
                 ],
               ),
             ),
@@ -488,8 +486,7 @@ class _ReviewOrder extends StatelessWidget {
         _InfoCard(
           title: 'Delivery To',
           children: [
-            Text(delivery,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(delivery, style: const TextStyle(fontWeight: FontWeight.w600)),
             Text(address, style: AppTextStyles.bodySmall),
           ],
         ),
@@ -497,8 +494,7 @@ class _ReviewOrder extends StatelessWidget {
         _InfoCard(
           title: 'Payment',
           children: [
-            Text(payment,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(payment, style: const TextStyle(fontWeight: FontWeight.w600)),
           ],
         ),
         const SizedBox(height: 12),
@@ -508,8 +504,7 @@ class _ReviewOrder extends StatelessWidget {
               .map((item) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Text(
@@ -522,8 +517,7 @@ class _ReviewOrder extends StatelessWidget {
                         Text(
                           '\$${item.totalPrice.toStringAsFixed(2)}',
                           style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500),
+                              fontSize: 13, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -539,8 +533,7 @@ class _ReviewOrder extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _row('Subtotal',
-                  '\$${cart.subtotal.toStringAsFixed(2)}'),
+              _row('Subtotal', '\$${cart.subtotal.toStringAsFixed(2)}'),
               const SizedBox(height: 8),
               _row(
                   'Shipping',
@@ -548,8 +541,7 @@ class _ReviewOrder extends StatelessWidget {
                       ? 'FREE'
                       : '\$${cart.shippingFee.toStringAsFixed(2)}'),
               const Divider(height: 20),
-              _row('Total', '\$${cart.total.toStringAsFixed(2)}',
-                  bold: true),
+              _row('Total', '\$${cart.total.toStringAsFixed(2)}', bold: true),
             ],
           ),
         ),
@@ -557,21 +549,17 @@ class _ReviewOrder extends StatelessWidget {
     );
   }
 
-  Widget _row(String label, String value, {bool bold = false}) =>
-      Row(
+  Widget _row(String label, String value, {bool bold = false}) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label,
               style: TextStyle(
                   color: bold ? AppColors.primary : AppColors.grey,
-                  fontWeight:
-                      bold ? FontWeight.bold : FontWeight.normal)),
+                  fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
           Text(value,
               style: TextStyle(
-                  color:
-                      bold ? AppColors.primary : AppColors.darkGrey,
-                  fontWeight:
-                      bold ? FontWeight.bold : FontWeight.w500,
+                  color: bold ? AppColors.primary : AppColors.darkGrey,
+                  fontWeight: bold ? FontWeight.bold : FontWeight.w500,
                   fontSize: bold ? 16 : 14)),
         ],
       );

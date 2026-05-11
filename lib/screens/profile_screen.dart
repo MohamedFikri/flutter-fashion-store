@@ -44,14 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _isSaving = true);
 
     final auth = context.read<AuthProvider>();
-    final updated = UserModel(
-      uid: auth.user!.uid,
-      name: _nameCtrl.text.trim(),
-      email: auth.user!.email,
-      phone: _phoneCtrl.text.trim(),
-      profileImage: auth.user!.profileImage,
-      address: _addressCtrl.text.trim(),
-    );
 
     final ok = await auth.updateProfile(
       name: _nameCtrl.text.trim(),
@@ -82,8 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Sign Out'),
         content: const Text('Are you sure you want to sign out?'),
         actions: [
@@ -182,8 +173,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(
-                              color: AppColors.lightGrey, width: 3),
+                          border:
+                              Border.all(color: AppColors.lightGrey, width: 3),
                         ),
                         child: Center(
                           child: Text(
@@ -206,7 +197,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Profile picture update coming soon!'),
+                                  content: Text(
+                                      'Profile picture update coming soon!'),
                                   backgroundColor: AppColors.secondary,
                                 ),
                               );
@@ -261,8 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     label: 'My Orders',
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (_) => const OrdersScreen()),
+                      MaterialPageRoute(builder: (_) => const OrdersScreen()),
                     ),
                   ),
                   _MenuItem(
@@ -283,7 +274,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Address management feature coming soon!'),
+                          content:
+                              Text('Address management feature coming soon!'),
                           backgroundColor: AppColors.secondary,
                         ),
                       );
@@ -313,7 +305,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       showDialog(
                         context: context,
                         builder: (_) => AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
                           title: const Text('Help & Support'),
                           content: const Column(
                             mainAxisSize: MainAxisSize.min,
@@ -343,7 +336,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       showDialog(
                         context: context,
                         builder: (_) => AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
                           title: const Text('About ModaFusion'),
                           content: const Column(
                             mainAxisSize: MainAxisSize.min,
@@ -353,7 +347,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               SizedBox(height: 8),
                               Text('Version: 1.0.0'),
                               SizedBox(height: 8),
-                              Text('Your premium fashion destination for the latest trends and styles.'),
+                              Text(
+                                  'Your premium fashion destination for the latest trends and styles.'),
                               SizedBox(height: 8),
                               Text('© 2024 ModaFusion. All rights reserved.'),
                             ],
@@ -450,9 +445,7 @@ class _InfoView extends StatelessWidget {
           _InfoRow(
             icon: Icons.location_on_outlined,
             label: 'Address',
-            value: user.address?.isNotEmpty == true
-                ? user.address!
-                : 'Not set',
+            value: user.address?.isNotEmpty == true ? user.address! : 'Not set',
           ),
         ],
       ),
@@ -483,8 +476,7 @@ class _InfoRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label,
-                  style: const TextStyle(
-                      fontSize: 11, color: AppColors.grey)),
+                  style: const TextStyle(fontSize: 11, color: AppColors.grey)),
               const SizedBox(height: 2),
               Text(value,
                   style: const TextStyle(
@@ -543,8 +535,8 @@ class _EditForm extends StatelessWidget {
             AppTextField(
               hint: 'Address',
               controller: addressCtrl,
-              prefixIcon: const Icon(Icons.location_on_outlined,
-                  color: AppColors.grey),
+              prefixIcon:
+                  const Icon(Icons.location_on_outlined, color: AppColors.grey),
               maxLines: 2,
             ),
           ],
@@ -573,8 +565,7 @@ class _MenuSection extends StatelessWidget {
           return Column(
             children: [
               items[i],
-              if (i < items.length - 1)
-                const Divider(height: 1, indent: 56),
+              if (i < items.length - 1) const Divider(height: 1, indent: 56),
             ],
           );
         }),
@@ -609,8 +600,7 @@ class _MenuItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Icon(icon,
-                size: 22, color: iconColor ?? AppColors.primary),
+            Icon(icon, size: 22, color: iconColor ?? AppColors.primary),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
@@ -623,8 +613,7 @@ class _MenuItem extends StatelessWidget {
               ),
             ),
             if (showChevron)
-              const Icon(Icons.chevron_right_rounded,
-                  color: AppColors.grey),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.grey),
           ],
         ),
       ),

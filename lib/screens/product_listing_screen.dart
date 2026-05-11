@@ -25,7 +25,12 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   bool _isGridView = true;
   String _sortBy = 'Default';
 
-  final _sortOptions = ['Default', 'Price: Low to High', 'Price: High to Low', 'Rating'];
+  final _sortOptions = [
+    'Default',
+    'Price: Low to High',
+    'Price: High to Low',
+    'Rating'
+  ];
 
   List<ProductModel> _sort(List<ProductModel> list) {
     switch (_sortBy) {
@@ -58,8 +63,9 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(
-                _isGridView ? Icons.view_list_rounded : Icons.grid_view_rounded),
+            icon: Icon(_isGridView
+                ? Icons.view_list_rounded
+                : Icons.grid_view_rounded),
             onPressed: () => setState(() => _isGridView = !_isGridView),
           ),
         ],
@@ -85,8 +91,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                         fontWeight: FontWeight.w500,
                         fontSize: 13),
                     items: _sortOptions
-                        .map((o) =>
-                            DropdownMenuItem(value: o, child: Text(o)))
+                        .map((o) => DropdownMenuItem(value: o, child: Text(o)))
                         .toList(),
                     onChanged: (v) => setState(() => _sortBy = v!),
                   ),
@@ -217,8 +222,8 @@ class _ListProductCard extends StatelessWidget {
           children: [
             // Product Image Section
             ClipRRect(
-              borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(16)),
+              borderRadius:
+                  const BorderRadius.horizontal(left: Radius.circular(16)),
               child: SizedBox(
                 width: 120,
                 height: 140,
@@ -282,17 +287,18 @@ class _ListProductCard extends StatelessWidget {
                   children: [
                     // Product Name
                     Text(product.name,
-                        style: AppTextStyles.heading3
-                            .copyWith(fontSize: 15, fontWeight: FontWeight.bold),
+                        style: AppTextStyles.heading3.copyWith(
+                            fontSize: 15, fontWeight: FontWeight.bold),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 6),
-                    
+
                     // Category Badge
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE94560).withOpacity(0.1),
+                        color: const Color(0xFFE94560).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(product.category,
@@ -303,7 +309,7 @@ class _ListProductCard extends StatelessWidget {
                           )),
                     ),
                     const SizedBox(height: 8),
-                    
+
                     // Price and Rating Row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -313,8 +319,10 @@ class _ListProductCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (product.originalPrice != null && product.originalPrice! > product.price)
-                                Text('\$${product.originalPrice!.toStringAsFixed(2)}',
+                              if (product.originalPrice != null &&
+                                  product.originalPrice! > product.price)
+                                Text(
+                                    '\$${product.originalPrice!.toStringAsFixed(2)}',
                                     style: AppTextStyles.bodySmall.copyWith(
                                       color: AppColors.grey,
                                       decoration: TextDecoration.lineThrough,
@@ -323,8 +331,9 @@ class _ListProductCard extends StatelessWidget {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis),
                               Text('\$${product.price.toStringAsFixed(2)}',
-                                  style: AppTextStyles.price
-                                      .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                  style: AppTextStyles.price.copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis),
                             ],
@@ -346,16 +355,17 @@ class _ListProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    
+
                     const Spacer(),
-                    
+
                     // Stock Indicator
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: product.stock > 0 
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.red.withOpacity(0.1),
+                        color: product.stock > 0
+                            ? Colors.green.withValues(alpha: 0.1)
+                            : Colors.red.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(

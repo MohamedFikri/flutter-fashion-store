@@ -90,8 +90,8 @@ class CartScreen extends StatelessWidget {
               cart.clear();
               Navigator.pop(context);
             },
-            child: const Text('Clear',
-                style: TextStyle(color: AppColors.error)),
+            child:
+                const Text('Clear', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -173,8 +173,7 @@ class _CartItemCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '${item.selectedSize} · ${item.selectedColor}',
-                    style: const TextStyle(
-                        fontSize: 12, color: AppColors.grey),
+                    style: const TextStyle(fontSize: 12, color: AppColors.grey),
                   ),
                   const SizedBox(height: 10),
                   Row(
@@ -217,12 +216,10 @@ class _QuantityRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             '${item.quantity}',
-            style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
-        _btn(Icons.add,
-            () => cart.updateQuantity(item.id, item.quantity + 1)),
+        _btn(Icons.add, () => cart.updateQuantity(item.id, item.quantity + 1)),
       ],
     );
   }
@@ -252,11 +249,10 @@ class _OrderSummary extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, -4),
           )
@@ -271,16 +267,14 @@ class _OrderSummary extends StatelessWidget {
             cart.shippingFee == 0
                 ? 'FREE'
                 : '\$${cart.shippingFee.toStringAsFixed(2)}',
-            valueColor:
-                cart.shippingFee == 0 ? AppColors.success : null,
+            valueColor: cart.shippingFee == 0 ? AppColors.success : null,
           ),
           if (cart.subtotal < 100)
             const Padding(
               padding: EdgeInsets.only(top: 4),
               child: Text(
                 'Free shipping on orders over \$100',
-                style: TextStyle(
-                    fontSize: 11, color: AppColors.grey),
+                style: TextStyle(fontSize: 11, color: AppColors.grey),
               ),
             ),
           const Divider(height: 24),
@@ -318,8 +312,8 @@ class _OrderSummary extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            color: valueColor ??
-                (isBold ? AppColors.primary : AppColors.darkGrey),
+            color:
+                valueColor ?? (isBold ? AppColors.primary : AppColors.darkGrey),
             fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
             fontSize: isBold ? 18 : 14,
           ),
@@ -346,7 +340,8 @@ class _PaymentMethodBottomSheet extends StatefulWidget {
   const _PaymentMethodBottomSheet({required this.cart});
 
   @override
-  State<_PaymentMethodBottomSheet> createState() => _PaymentMethodBottomSheetState();
+  State<_PaymentMethodBottomSheet> createState() =>
+      _PaymentMethodBottomSheetState();
 }
 
 class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
@@ -400,7 +395,7 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
             ),
           ),
           const SizedBox(height: 20),
-          
+
           // Header
           Row(
             children: [
@@ -420,7 +415,7 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
             ],
           ),
           const SizedBox(height: 20),
-          
+
           // Order Summary
           Container(
             padding: const EdgeInsets.all(16),
@@ -433,7 +428,8 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Subtotal', style: TextStyle(color: AppColors.grey)),
+                    const Text('Subtotal',
+                        style: TextStyle(color: AppColors.grey)),
                     Text('\$${widget.cart.subtotal.toStringAsFixed(2)}'),
                   ],
                 ),
@@ -441,7 +437,8 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Shipping', style: TextStyle(color: AppColors.grey)),
+                    const Text('Shipping',
+                        style: TextStyle(color: AppColors.grey)),
                     Text(
                       widget.cart.shippingFee == 0
                           ? 'FREE'
@@ -474,7 +471,7 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
             ),
           ),
           const SizedBox(height: 20),
-          
+
           // Payment Methods
           Expanded(
             child: ListView.separated(
@@ -484,17 +481,19 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
               itemBuilder: (_, index) {
                 final method = PaymentService.getAvailableMethods()[index];
                 final isSelected = _selectedPaymentMethod?.id == method.id;
-                
+
                 return GestureDetector(
                   onTap: () => setState(() => _selectedPaymentMethod = method),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? AppColors.primary.withOpacity(0.1)
+                          ? AppColors.primary.withValues(alpha: 0.1)
                           : AppColors.white,
                       border: Border.all(
-                        color: isSelected ? AppColors.primary : AppColors.lightGrey,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.lightGrey,
                         width: isSelected ? 2 : 1,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -503,7 +502,8 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
                       children: [
                         Icon(
                           method.icon,
-                          color: isSelected ? AppColors.primary : AppColors.grey,
+                          color:
+                              isSelected ? AppColors.primary : AppColors.grey,
                           size: 24,
                         ),
                         const SizedBox(width: 16),
@@ -515,7 +515,9 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
                                 method.title,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: isSelected ? AppColors.primary : AppColors.darkGrey,
+                                  color: isSelected
+                                      ? AppColors.primary
+                                      : AppColors.darkGrey,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -526,7 +528,8 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
                                   color: AppColors.grey,
                                 ),
                               ),
-                              if (method.processingFee != null && method.processingFee! > 0)
+                              if (method.processingFee != null &&
+                                  method.processingFee! > 0)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 4),
                                   child: Text(
@@ -541,7 +544,8 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
                           ),
                         ),
                         if (isSelected)
-                          const Icon(Icons.check_circle, color: AppColors.primary),
+                          const Icon(Icons.check_circle,
+                              color: AppColors.primary),
                       ],
                     ),
                   ),
@@ -549,13 +553,14 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
               },
             ),
           ),
-          
+
           // Continue Button
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: _selectedPaymentMethod != null ? _handleContinue : null,
+              onPressed:
+                  _selectedPaymentMethod != null ? _handleContinue : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
@@ -583,7 +588,8 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
     if (_selectedPaymentMethod == null) return;
 
     // Check if payment method requires additional details
-    if (_requiresPaymentDetails(_selectedPaymentMethod!) && _paymentDetails == null) {
+    if (_requiresPaymentDetails(_selectedPaymentMethod!) &&
+        _paymentDetails == null) {
       setState(() => _showPaymentDetailsForm = true);
       return;
     }
@@ -610,7 +616,7 @@ class _PaymentMethodBottomSheetState extends State<_PaymentMethodBottomSheet> {
       _paymentDetails = details;
       _showPaymentDetailsForm = false;
     });
-    
+
     // Proceed to checkout
     Navigator.pop(context);
     Navigator.push(

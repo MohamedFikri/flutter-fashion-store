@@ -13,7 +13,7 @@ import 'package:fashion_store/main.dart';
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const FashionStoreApp());
+    await tester.pumpWidget(const ModaFusionApp());
 
     // Verify that app launches
     expect(find.byType(Scaffold), findsWidgets);

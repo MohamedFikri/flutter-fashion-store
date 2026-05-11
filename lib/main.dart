@@ -15,6 +15,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Initialize sample products if needed
+  await FirebaseService.initializeProducts();
+
   // Lock orientation to portrait
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

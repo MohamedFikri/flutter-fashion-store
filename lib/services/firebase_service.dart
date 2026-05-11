@@ -163,9 +163,8 @@ class FirebaseService {
             originalPrice: 7990.00,
             category: 'Women',
             images: [
-              'https://picsum.photos/seed/kurti1/400/300.jpg',
-              'https://picsum.photos/seed/kurti2/400/300.jpg',
-              'https://picsum.photos/seed/kurti3/400/300.jpg',
+              'assets/images/products/womens_kurti_set_1.jpg',
+              'assets/images/products/womens_kurti_set_2.jpg',
             ],
             sizes: ['S', 'M', 'L', 'XL'],
             colors: ['Maroon', 'Navy', 'Cream'],
@@ -182,8 +181,8 @@ class FirebaseService {
             originalPrice: 2990.00,
             category: 'Men',
             images: [
-              'https://picsum.photos/seed/shirt1/400/300.jpg',
-              'https://picsum.photos/seed/shirt2/400/300.jpg',
+              'assets/images/products/mens_casual_shirt_1.jpg',
+              'assets/images/products/mens_casual_shirt_2.jpg',
             ],
             sizes: ['S', 'M', 'L', 'XL', 'XXL'],
             colors: ['White', 'Blue', 'Black'],
@@ -192,14 +191,88 @@ class FirebaseService {
             isFeatured: false,
             stock: 15,
           ),
+          ProductModel(
+            id: '3',
+            name: "Enjoy Hoodie",
+            description: 'Stylish and comfortable hoodie with statement design.',
+            price: 3990.00,
+            originalPrice: 4990.00,
+            category: 'Hoodies',
+            images: [
+              'assets/images/products/boys_hoodie_1.jpg',
+              'assets/images/products/boys_hoodie_2.jpg',
+            ],
+            sizes: ['M', 'L', 'XL'],
+            colors: ['Black', 'Red', 'Grey'],
+            rating: 4.8,
+            reviewCount: 256,
+            isFeatured: true,
+            stock: 20,
+          ),
+          ProductModel(
+            id: '4',
+            name: "Graphic T-Shirt",
+            description: 'Premium cotton t-shirt with modern graphic prints.',
+            price: 1990.00,
+            originalPrice: 2490.00,
+            category: 'Graphic',
+            images: [
+              'assets/images/products/mens_casual_shirt_3.jpg',
+            ],
+            sizes: ['S', 'M', 'L', 'XL'],
+            colors: ['White', 'Black'],
+            rating: 4.6,
+            reviewCount: 142,
+            isFeatured: true,
+            stock: 30,
+          ),
         ];
 
         for (final product in sampleProducts) {
           await saveProduct(product);
         }
       }
+      
+      // Also initialize sample orders if needed
+      await initializeOrders();
     } catch (e) {
       debugPrint('Error initializing products: $e');
+    }
+  }
+
+  // Initialize sample orders in Firebase
+  static Future<void> initializeOrders() async {
+    try {
+      final snapshot = await ordersCollection.limit(1).get();
+      if (snapshot.docs.isEmpty) {
+        final sampleOrder = {
+          'userId': 'sample_user_1',
+          'items': [
+            {
+              'productId': '1',
+              'name': "Women's Kurti Set",
+              'quantity': 1,
+              'price': 6490.0,
+              'selectedSize': 'M',
+              'selectedColor': 'Maroon',
+            }
+          ],
+          'fullName': 'John Doe',
+          'phone': '0123456789',
+          'address': '123 Main St',
+          'city': 'Colombo',
+          'postalCode': '10100',
+          'country': 'Sri Lanka',
+          'totalAmount': 6490.0,
+          'paymentMethod': 'Cash on Delivery',
+          'status': 'pending',
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+        await ordersCollection.add(sampleOrder);
+      }
+    } catch (e) {
+      debugPrint('Error initializing orders: $e');
     }
   }
 }

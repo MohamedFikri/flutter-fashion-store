@@ -54,6 +54,7 @@ class ProductCard extends StatelessWidget {
                                 product.images[0],
                                 fit: BoxFit.cover,
                                 filterQuality: FilterQuality.high,
+                                errorBuilder: (_, __, ___) => _placeholder(),
                               ))
                         : _placeholder(),
                     if (product.discountPercent > 0)

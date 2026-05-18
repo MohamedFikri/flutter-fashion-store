@@ -4,7 +4,7 @@
       "android": {
         "default": {
           "projectId": "fikkk-b802d",
-          "appId": "1:864093639820:android:874c6fbe452b9f993457a9",
+          "appId": "1:123456789012:android:abcdef1234567890",
           "fileOutput": "android/app/google-services.json"
         }
       },
@@ -12,11 +12,9 @@
         "lib/firebase_options.dart": {
           "projectId": "fikkk-b802d",
           "configurations": {
-            "android": "1:864093639820:android:874c6fbe452b9f993457a9",
-            "ios": "1:864093639820:ios:2acd4a6f1947993d3457a9",
-            "macos": "1:864093639820:ios:2acd4a6f1947993d3457a9",
-            "web": "1:864093639820:web:6be932aff4b966eb3457a9",
-            "windows": "1:864093639820:web:6be932aff4b966eb3457a9"
+            "android": "1:123456789012:android:abcdef1234567890",
+            "web": "1:123456789012:web:abcdef1234567890",
+            "windows": "1:123456789012:web:abcdef1234567890"
           }
         }
       }

@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Map<String, dynamic>> _banners = [
     {
-      'title': 'New Arriva OutFit',
+      'title': 'New Arrival Outfit',
       'subtitle': 'Discover Quality Fashion Collection',
       'color': const Color(0xFF1A1A2E),
       'image': 'assets/images/products/womens_kurti_set_1.jpg',
@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
             // ── Featured Products ──────────────────────────────
             SliverToBoxAdapter(
@@ -298,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.75,
+                  childAspectRatio: 0.68,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
@@ -317,20 +317,29 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                         final products = snapshot.data!;
                         if (index < products.length) {
-                          return _buildProductCard(products[index]);
+                          return ProductCard(
+                            product: products[index],
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ProductDetailScreen(product: products[index]),
+                              ),
+                            ),
+                          );
                         }
                         return const SizedBox.shrink();
                       },
                     );
                   },
-                  childCount: 6,
+                  childCount: 4,
                 ),
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-            // ── Enjoy Hoodie Section ───────────────────────────
+            // ── Enjoy Hoodie Section ─────────────────────────────
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -446,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.75,
+                  childAspectRatio: 0.68,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
@@ -465,18 +474,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                         final products = snapshot.data!;
                         if (index < products.length) {
-                          return _buildProductCard(products[index]);
+                          return ProductCard(
+                            product: products[index],
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ProductDetailScreen(product: products[index]),
+                              ),
+                            ),
+                          );
                         }
                         return const SizedBox.shrink();
                       },
                     );
                   },
-                  childCount: 6,
+                  childCount: 4,
                 ),
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            const SliverToBoxAdapter(child: SizedBox(height: 80)),
           ],
         ),
       ),
@@ -510,9 +528,10 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(
-                image: data['isLocal'] == true
-                    ? AssetImage(data['image']) as ImageProvider
-                    : CachedNetworkImageProvider(data['image']) as ImageProvider,
+                image: (data['image'].toString().startsWith('http') ||
+                        data['isLocal'] == false)
+                    ? CachedNetworkImageProvider(data['image']) as ImageProvider
+                    : AssetImage(data['image']) as ImageProvider,
                 fit: BoxFit.cover,
               ),
             ),
@@ -594,232 +613,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProductCard(ProductModel product) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ProductDetailScreen(product: product),
-          ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Product Image Section
-            Expanded(
-              flex: 4,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
-                  image: DecorationImage(
-                    image: AssetImage(
-                      product.images.isNotEmpty
-                          ? product.images.first
-                          : 'assets/images/products/womens_kurti_set_1.jpg',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    // Gradient overlay for better text visibility
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16)),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withValues(alpha: 0.1),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Featured badge
-                    if (product.isFeatured)
-                      Positioned(
-                        top: 8,
-                        left: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE94560),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'Featured',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    // Discount badge
-                    if (product.originalPrice != null &&
-                        product.originalPrice! > product.price)
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            '${((product.originalPrice! - product.price) / product.originalPrice! * 100).round()}% OFF',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            // Product Details Section
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Product Name
-                    Text(
-                      product.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1A2E),
-                        height: 1.2,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-
-                    // Rating
-                    Row(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(5, (index) {
-                            return Icon(
-                              index < product.rating.floor()
-                                  ? Icons.star
-                                  : index < product.rating
-                                      ? Icons.star_half
-                                      : Icons.star_border,
-                              color: const Color(0xFFE94560),
-                              size: 12,
-                            );
-                          }),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '(${product.reviewCount})',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    // Price Section
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '\$${product.price}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFE94560),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (product.originalPrice != null &&
-                            product.originalPrice! > product.price) ...[
-                          const SizedBox(width: 6),
-                          Flexible(
-                            child: Text(
-                              '\$${product.originalPrice}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[500],
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    // Stock indicator
-                    Row(
-                      children: [
-                        Icon(
-                          product.stock > 0
-                              ? Icons.check_circle
-                              : Icons.remove_circle,
-                          color: product.stock > 0 ? Colors.green : Colors.red,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          product.stock > 0 ? 'In Stock' : 'Out of Stock',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color:
-                                product.stock > 0 ? Colors.green : Colors.red,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // _buildProductCard was removed and replaced with ProductCard widget for better consistency and error handling
 }

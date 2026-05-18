@@ -11,9 +11,13 @@ import 'screens/login_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase initialization error: $e');
+  }
 
   // Lock orientation to portrait
   await SystemChrome.setPreferredOrientations([
@@ -29,8 +33,10 @@ void main() async {
     ),
   );
 
-  // Initialize Firebase products
-  await FirebaseService.initializeProducts();
+  // Initialize Firebase products in background
+  FirebaseService.initializeProducts().catchError((e) {
+    debugPrint('Products initialization error: $e');
+  });
 
   runApp(const ModaFusionApp());
 }
@@ -55,6 +61,7 @@ class ModaFusionApp extends StatelessWidget {
         ),
         home: Consumer<AuthProvider>(
           builder: (context, auth, _) {
+            // Show loading screen during initialization
             return auth.isLoggedIn ? const MainNavScreen() : const LoginScreen();
           },
         ),

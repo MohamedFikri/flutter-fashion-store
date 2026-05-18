@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/models.dart';
 import '../providers/providers.dart';
-import '../services/order_service.dart';
+import '../services/firebase_service.dart';
 import '../utils/app_theme.dart';
 
 class OrdersScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class OrdersScreen extends StatelessWidget {
       body: auth.user == null
           ? const Center(child: Text('Please login to view orders'))
           : StreamBuilder<List<OrderModel>>(
-              stream: OrderService().getUserOrders(auth.user!.uid),
+              stream: FirebaseService.getUserOrdersStream(auth.user!.uid),
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -139,18 +140,36 @@ class _OrderCard extends StatelessWidget {
                     if (item.productImage.isNotEmpty)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          item.productImage,
-                          width: 48,
-                          height: 48,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
-                              Container(
+                        child: item.productImage.startsWith('http')
+                            ? CachedNetworkImage(
+                                imageUrl: item.productImage,
                                 width: 48,
                                 height: 48,
-                                color: AppColors.lightGrey,
+                                fit: BoxFit.cover,
+                                placeholder: (_, __) => Container(
+                                  width: 48,
+                                  height: 48,
+                                  color: AppColors.lightGrey,
+                                ),
+                                errorWidget: (_, __, ___) => Container(
+                                  width: 48,
+                                  height: 48,
+                                  color: AppColors.lightGrey,
+                                  child: const Icon(Icons.image_not_supported_outlined, size: 20),
+                                ),
+                              )
+                            : Image.asset(
+                                item.productImage,
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  width: 48,
+                                  height: 48,
+                                  color: AppColors.lightGrey,
+                                  child: const Icon(Icons.image_not_supported_outlined, size: 20),
+                                ),
                               ),
-                        ),
                       ),
                     const SizedBox(width: 10),
                     Expanded(

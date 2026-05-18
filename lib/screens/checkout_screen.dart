@@ -94,13 +94,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         }
       }
 
+      if (!mounted) return;
+      final auth = context.read<AuthProvider>();
       final success = await cart.checkout(
+        userId: auth.user?.uid ?? '',
         fullName: _nameCtrl.text,
         phone: _phoneCtrl.text,
         address: _addressCtrl.text,
         city: _cityCtrl.text,
         postalCode: _postalCtrl.text,
         country: _countryCtrl.text,
+        email: auth.user?.email,
       );
 
       if (!mounted) return;

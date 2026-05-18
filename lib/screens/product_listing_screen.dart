@@ -264,6 +264,16 @@ class _ListProductCard extends StatelessWidget {
                             width: double.infinity,
                             height: double.infinity,
                             filterQuality: FilterQuality.high,
+                            errorBuilder: (_, __, ___) => Container(
+                              color: AppColors.lightGrey,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.broken_image_outlined,
+                                  color: AppColors.grey,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
                           ))
                     : Container(
                         color: AppColors.lightGrey,

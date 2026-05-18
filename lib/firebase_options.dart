@@ -22,16 +22,12 @@ class DefaultFirebaseOptions {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
-      case TargetPlatform.iOS:
-        return ios;
-      case TargetPlatform.macOS:
-        return macos;
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -41,12 +37,12 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCao6--DJNBJEQkAtNrI7jJWNr15XpHVA4',
-    appId: '1:864093639820:web:6be932aff4b966eb3457a9',
+    apiKey: 'AIzaSyCyoDnf-AcP8bvL3-DjW8VFRn39JYbA9yU',
+    appId: '1:864093639820:web:abcdef1234567890',
     messagingSenderId: '864093639820',
     projectId: 'fikkk-b802d',
     authDomain: 'fikkk-b802d.firebaseapp.com',
-    storageBucket: 'fikkk-b802d.firebasestorage.app',
+    storageBucket: 'fikkk-b802d.appspot.com',
     measurementId: 'G-1FDB3GK22H',
   );
 
@@ -55,36 +51,16 @@ class DefaultFirebaseOptions {
     appId: '1:864093639820:android:874c6fbe452b9f993457a9',
     messagingSenderId: '864093639820',
     projectId: 'fikkk-b802d',
-    storageBucket: 'fikkk-b802d.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCA7r7inRDaqD4rsFeUofsEzXmy_xyeOTs',
-    appId: '1:864093639820:ios:2acd4a6f1947993d3457a9',
-    messagingSenderId: '864093639820',
-    projectId: 'fikkk-b802d',
-    storageBucket: 'fikkk-b802d.firebasestorage.app',
-    iosClientId: '864093639820-ieij97moja5frt9ajq45plmb9po6lrgk.apps.googleusercontent.com',
-    iosBundleId: 'com.example.fashionStore',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCA7r7inRDaqD4rsFeUofsEzXmy_xyeOTs',
-    appId: '1:864093639820:ios:2acd4a6f1947993d3457a9',
-    messagingSenderId: '864093639820',
-    projectId: 'fikkk-b802d',
-    storageBucket: 'fikkk-b802d.firebasestorage.app',
-    iosClientId: '864093639820-ieij97moja5frt9ajq45plmb9po6lrgk.apps.googleusercontent.com',
-    iosBundleId: 'com.example.fashionStore',
+    storageBucket: 'fikkk-b802d.appspot.com',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCao6--DJNBJEQkAtNrI7jJWNr15XpHVA4',
-    appId: '1:864093639820:web:6be932aff4b966eb3457a9',
+    apiKey: 'AIzaSyCyoDnf-AcP8bvL3-DjW8VFRn39JYbA9yU',
+    appId: '1:864093639820:web:abcdef1234567890',
     messagingSenderId: '864093639820',
     projectId: 'fikkk-b802d',
     authDomain: 'fikkk-b802d.firebaseapp.com',
-    storageBucket: 'fikkk-b802d.firebasestorage.app',
+    storageBucket: 'fikkk-b802d.appspot.com',
     measurementId: 'G-1FDB3GK22H',
   );
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import '../providers/providers.dart';
 import 'main_nav_screen.dart';
 import 'register_screen.dart';
 
@@ -32,35 +31,44 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Sign in with Firebase Auth
-      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailCtrl.text.trim(),
-        password: _passwordCtrl.text,
+      // Use AuthProvider for authentication
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final success = await authProvider.signInWithEmail(
+        _emailCtrl.text.trim(),
+        _passwordCtrl.text,
       );
-
-      // Save user data to Firestore
-      await _saveUserToFirestore(userCredential.user!);
 
       if (!mounted) return;
       
       setState(() => _isLoading = false);
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successful!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (success) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login successful!'),
+            backgroundColor: Colors.green,
+          ),
+        );
 
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const MainNavScreen(),
-          transitionsBuilder: (_, anim, __, child) =>
-              FadeTransition(opacity: anim, child: child),
-          transitionDuration: const Duration(milliseconds: 600),
-        ),
-      );
+        Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const MainNavScreen(),
+            transitionsBuilder: (_, anim, __, child) =>
+                FadeTransition(opacity: anim, child: child),
+            transitionDuration: const Duration(milliseconds: 600),
+          ),
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.error ?? 'Login failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       
@@ -68,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Login failed: ${_getErrorMessage(e)}'),
+          content: Text('Login failed: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -79,45 +87,39 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Sign in with Google
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      
-      if (googleUser == null) {
-        throw Exception('Google sign-in was cancelled');
-      }
-
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      
-      // Save Google user data to Firestore
-      await _saveUserToFirestore(userCredential.user!);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final success = await authProvider.signInWithGoogle();
 
       if (!mounted) return;
       
       setState(() => _isLoading = false);
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Google login successful!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Google login successful!'),
+            backgroundColor: Colors.green,
+          ),
+        );
 
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const MainNavScreen(),
-          transitionsBuilder: (_, anim, __, child) =>
-              FadeTransition(opacity: anim, child: child),
-          transitionDuration: const Duration(milliseconds: 600),
-        ),
-      );
+        Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const MainNavScreen(),
+            transitionsBuilder: (_, anim, __, child) =>
+                FadeTransition(opacity: anim, child: child),
+            transitionDuration: const Duration(milliseconds: 600),
+          ),
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.error ?? 'Google login failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       
@@ -125,55 +127,14 @@ class _LoginScreenState extends State<LoginScreen> {
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Google login failed: ${_getErrorMessage(e)}'),
+          content: Text('Google login failed: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
     }
   }
 
-  Future<void> _saveUserToFirestore(User user) async {
-    try {
-      final userDoc = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid);
-          
-      await userDoc.set({
-        'uid': user.uid,
-        'email': user.email,
-        'name': user.displayName ?? 'User',
-        'phone': user.phoneNumber ?? '',
-        'address': 'Address not set',
-        'profileImage': user.photoURL ?? '',
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-    } catch (e) {
-      debugPrint('Error saving user to Firestore: $e');
-    }
-  }
 
-  String _getErrorMessage(dynamic error) {
-    if (error is FirebaseAuthException) {
-      switch (error.code) {
-        case 'user-not-found':
-          return 'No user found for this email.';
-        case 'wrong-password':
-          return 'Wrong password provided.';
-        case 'invalid-email':
-          return 'The email address is not valid.';
-        case 'user-disabled':
-          return 'This user has been disabled.';
-        case 'too-many-requests':
-          return 'Too many requests. Try again later.';
-        case 'network-request-failed':
-          return 'Network error. Please check your connection.';
-        default:
-          return 'An error occurred: ${error.message}';
-      }
-    }
-    return 'An unknown error occurred.';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,10 +158,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.blue.shade600,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(
-                      Icons.shopping_bag,
-                      size: 40,
-                      color: Colors.white,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),

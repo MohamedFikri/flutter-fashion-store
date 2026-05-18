@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 // ─── Product Model ───────────────────────────────────────────
 class ProductModel {
   final String id;
@@ -31,14 +33,40 @@ class ProductModel {
   });
 
   factory ProductModel.fromMap(Map<String, dynamic> map, String docId) {
+    // Handle various image field name variations (images, imageUrl, photos, productImage, image_url, etc)
+    List<String> imageList = [];
+    if (map['images'] != null) {
+      if (map['images'] is List) {
+        imageList = List<String>.from(map['images']);
+      } else {
+        imageList = [map['images'].toString()];
+      }
+    } else if (map['imageUrl'] != null) {
+      imageList = [map['imageUrl'].toString()];
+    } else if (map['photos'] != null) {
+      if (map['photos'] is List) {
+        imageList = List<String>.from(map['photos']);
+      } else {
+        imageList = [map['photos'].toString()];
+      }
+    } else if (map['image'] != null) {
+      imageList = [map['image'].toString()];
+    } else if (map['image_url'] != null) {
+      imageList = [map['image_url'].toString()];
+    } else if (map['productImage'] != null) {
+      imageList = [map['productImage'].toString()];
+    } else if (map['photo'] != null) {
+      imageList = [map['photo'].toString()];
+    }
+
     return ProductModel(
       id: docId,
-      name: map['name'] ?? '',
-      description: map['description'] ?? '',
+      name: map['name'] ?? map['productName'] ?? 'No Name',
+      description: map['description'] ?? 'No Description',
       price: (map['price'] ?? 0).toDouble(),
-      originalPrice: map['originalPrice']?.toDouble(),
-      category: map['category'] ?? '',
-      images: List<String>.from(map['images'] ?? []),
+      originalPrice: (map['originalPrice'] ?? map['oldPrice'])?.toDouble(),
+      category: map['category'] ?? 'General',
+      images: imageList.isNotEmpty ? imageList : ['assets/images/logo.png'],
       sizes: List<String>.from(map['sizes'] ?? []),
       colors: List<String>.from(map['colors'] ?? []),
       rating: (map['rating'] ?? 4.0).toDouble(),
@@ -124,20 +152,31 @@ class OrderModel {
   });
 
   factory OrderModel.fromMap(Map<String, dynamic> map, String docId) {
+    // Check if delivery details are at root or in a nested object
+    final deliveryDetailsMap = map['deliveryDetails'] as Map<String, dynamic>? ?? {
+      'fullName': map['fullName'] ?? map['customerName'] ?? '',
+      'phone': map['phone'] ?? '',
+      'address': map['address'] ?? '',
+      'city': map['city'] ?? '',
+      'postalCode': map['postalCode'] ?? '',
+      'country': map['country'] ?? '',
+    };
+
     return OrderModel(
       id: docId,
       userId: map['userId'] ?? '',
       items: (map['items'] as List<dynamic>? ?? [])
-          .map((e) => OrderItemModel.fromMap(e))
+          .map((e) => OrderItemModel.fromMap(e as Map<String, dynamic>))
           .toList(),
-      subtotal: (map['subtotal'] ?? 0).toDouble(),
+      subtotal: (map['subtotal'] ?? map['totalAmount'] ?? 0).toDouble(),
       shippingFee: (map['shippingFee'] ?? 0).toDouble(),
-      total: (map['total'] ?? 0).toDouble(),
-      status: map['status'] ?? 'Pending',
-      deliveryDetails:
-          DeliveryDetails.fromMap(map['deliveryDetails'] ?? {}),
+      total: (map['total'] ?? map['totalAmount'] ?? 0).toDouble(),
+      status: map['status'] ?? map['orderStatus'] ?? 'Pending',
+      deliveryDetails: DeliveryDetails.fromMap(deliveryDetailsMap),
       createdAt: map['createdAt'] != null
-          ? (map['createdAt'] as dynamic).toDate()
+          ? (map['createdAt'] is Timestamp 
+              ? (map['createdAt'] as Timestamp).toDate() 
+              : DateTime.parse(map['createdAt'].toString()))
           : DateTime.now(),
     );
   }
@@ -174,9 +213,9 @@ class OrderItemModel {
   });
 
   factory OrderItemModel.fromMap(Map<String, dynamic> map) => OrderItemModel(
-        productId: map['productId'] ?? '',
-        productName: map['productName'] ?? '',
-        productImage: map['productImage'] ?? '',
+        productId: map['productId'] ?? map['id'] ?? '',
+        productName: map['productName'] ?? map['name'] ?? 'Unknown Product',
+        productImage: map['productImage'] ?? map['imageUrl'] ?? map['image'] ?? map['photo'] ?? map['imageUrl'] ?? (map['images'] != null ? (map['images'] is List ? map['images'][0] : map['images']) : 'assets/images/logo.png'),
         price: (map['price'] ?? 0).toDouble(),
         quantity: map['quantity'] ?? 1,
         selectedSize: map['selectedSize'] ?? '',
@@ -250,10 +289,10 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map, String uid) => UserModel(
         uid: uid,
-        name: map['name'] ?? '',
+        name: map['name'] ?? map['fullName'] ?? 'No Name',
         email: map['email'] ?? '',
         phone: map['phone'] ?? '',
-        profileImage: map['profileImage'],
+        profileImage: map['profileImage'] ?? map['imageUrl'],
         address: map['address'],
       );
 

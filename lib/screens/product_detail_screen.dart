@@ -114,10 +114,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             fit: BoxFit.cover,
                             placeholder: (_, __) =>
                                 Container(color: AppColors.lightGrey),
+                            errorWidget: (_, __, ___) => Container(
+                              color: AppColors.lightGrey,
+                              child: const Icon(Icons.image_not_supported_outlined,
+                                  color: AppColors.grey, size: 40),
+                            ),
                           )
                         : Image.asset(
                             p.images[i],
                             fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              color: AppColors.lightGrey,
+                              child: const Icon(Icons.image_not_supported_outlined,
+                                  color: AppColors.grey, size: 40),
+                            ),
                           ),
                   ),
                   if (p.images.length > 1)

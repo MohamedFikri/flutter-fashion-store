@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/models.dart';
+import '../services/firebase_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   UserModel? _user;
@@ -35,14 +36,7 @@ class AuthProvider extends ChangeNotifier {
 
       if (userDoc.exists) {
         final userData = userDoc.data() as Map<String, dynamic>;
-        _user = UserModel(
-          uid: firebaseUser.uid,
-          email: userData['email'] ?? firebaseUser.email ?? '',
-          name: userData['name'] ?? firebaseUser.displayName ?? 'User',
-          phone: userData['phone'] ?? firebaseUser.phoneNumber ?? '',
-          address: userData['address'] ?? 'Address not set',
-          profileImage: userData['profileImage'] ?? '',
-        );
+        _user = UserModel.fromMap(userData, firebaseUser.uid);
       } else {
         // Create user data if it doesn't exist
         _user = UserModel(
@@ -274,6 +268,8 @@ class AuthProvider extends ChangeNotifier {
 
   String _getErrorMessage(dynamic error) {
     if (error is FirebaseAuthException) {
+      debugPrint('Firebase Auth Error Code: ${error.code}');
+      debugPrint('Firebase Auth Error Message: ${error.message}');
       switch (error.code) {
         case 'user-not-found':
           return 'No user found for this email.';
@@ -293,11 +289,19 @@ class AuthProvider extends ChangeNotifier {
           return 'Email/password accounts are not enabled.';
         case 'network-request-failed':
           return 'Network error. Please check your connection.';
+        case 'invalid-api-key':
+          return 'Invalid API key. Check Firebase configuration.';
+        case 'api-key-not-valid':
+          return 'API key not valid. Please pass a valid API key.';
+        case 'invalid-credential':
+          return 'Invalid credentials. Please check your email and password.';
+        case 'user-mismatch':
+          return 'User credentials do not match.';
         default:
-          return 'An error occurred: ${error.message}';
+          return 'Authentication error (${error.code}): ${error.message}';
       }
     }
-    return 'An unknown error occurred.';
+    return 'An unknown error occurred: $error';
   }
 }
 
@@ -352,21 +356,38 @@ class CartProvider extends ChangeNotifier {
   }
 
   Future<bool> checkout({
+    required String userId,
     required String fullName,
     required String phone,
     required String address,
     required String city,
     required String postalCode,
     required String country,
+    String? email,
   }) async {
     try {
-      // Simulate checkout process
-      await Future.delayed(const Duration(seconds: 2));
+      if (_items.isEmpty) return false;
+      
+      // Save order to Firestore
+      await FirebaseService.saveOrder(
+        userId: userId,
+        items: _items,
+        fullName: fullName,
+        phone: phone,
+        address: address,
+        city: city,
+        postalCode: postalCode,
+        country: country,
+        totalAmount: total,
+        paymentMethod: 'Cash on Delivery', // Default for now
+        userEmail: email,
+      );
       
       // Clear cart after successful checkout
       clear();
       return true;
     } catch (e) {
+      debugPrint('Checkout error: $e');
       return false;
     }
   }

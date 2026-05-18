@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import '../providers/providers.dart';
 import 'login_screen.dart';
 import 'main_nav_screen.dart';
 
@@ -39,38 +39,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Create user with Firebase Auth
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final success = await authProvider.signUpWithEmail(
+        name: _nameCtrl.text.trim(),
         email: _emailCtrl.text.trim(),
         password: _passwordCtrl.text,
+        phone: _phoneCtrl.text.trim(),
       );
-
-      // Update user display name
-      await userCredential.user?.updateDisplayName(_nameCtrl.text.trim());
-
-      // Save user data to Firestore
-      await _saveUserToFirestore(userCredential.user!);
 
       if (!mounted) return;
       
       setState(() => _isLoading = false);
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Account created successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account created successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
 
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const MainNavScreen(),
-          transitionsBuilder: (_, anim, __, child) =>
-              FadeTransition(opacity: anim, child: child),
-          transitionDuration: const Duration(milliseconds: 600),
-        ),
-      );
+        Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const MainNavScreen(),
+            transitionsBuilder: (_, anim, __, child) =>
+                FadeTransition(opacity: anim, child: child),
+            transitionDuration: const Duration(milliseconds: 600),
+          ),
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.error ?? 'Registration failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       
@@ -78,53 +84,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Registration failed: ${_getErrorMessage(e)}'),
+          content: Text('Registration failed: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
     }
   }
 
-  Future<void> _saveUserToFirestore(User user) async {
-    try {
-      final userDoc = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid);
-          
-      await userDoc.set({
-        'uid': user.uid,
-        'email': user.email,
-        'name': _nameCtrl.text.trim(),
-        'phone': _phoneCtrl.text.trim(),
-        'address': 'Address not set',
-        'profileImage': '',
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-    } catch (e) {
-      debugPrint('Error saving user to Firestore: $e');
-    }
-  }
 
-  String _getErrorMessage(dynamic error) {
-    if (error is FirebaseAuthException) {
-      switch (error.code) {
-        case 'weak-password':
-          return 'The password provided is too weak.';
-        case 'email-already-in-use':
-          return 'An account already exists for this email.';
-        case 'invalid-email':
-          return 'The email address is not valid.';
-        case 'operation-not-allowed':
-          return 'Email/password accounts are not enabled.';
-        case 'network-request-failed':
-          return 'Network error. Please check your connection.';
-        default:
-          return 'An error occurred: ${error.message}';
-      }
-    }
-    return 'An unknown error occurred.';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,10 +115,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: Colors.blue.shade600,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(
-                      Icons.person_add,
-                      size: 40,
-                      color: Colors.white,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
